@@ -27,7 +27,7 @@ export class Aluno {
     return aluno;
   }
 
-  cloneMetas(): Map<string,string> {
+  cloneMetas(): Map<any,any> {
     var metas: Map<string,string> = new Map(this.metas);
 
     return metas;

@@ -1,8 +1,10 @@
 export class Aluno {
-  nome: string;
-  cpf: string;
-  email: string;
-  metas: Map<string,string>;
+  nome: string = "";
+  cpf: string = "";
+  email: string = "";
+  login_github: string = "";
+  metas: Map<string,string> = new Map();
+
 
   constructor() {
     this.clean();
@@ -12,7 +14,8 @@ export class Aluno {
     this.nome = "";
     this.cpf = "";
     this.email = "";
-    this.metas = new Map<string,string>();
+    this.login_github = "";
+    this.metas = new Map();
   }
 
   clone(): Aluno {
@@ -26,6 +29,7 @@ export class Aluno {
     this.nome = from.nome;
     this.cpf = from.cpf;
     this.email = from.email;
+    this.login_github = from.login_github;
     this.copyMetasFrom(from.metas);
   }
 
