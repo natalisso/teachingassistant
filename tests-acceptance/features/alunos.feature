@@ -14,3 +14,9 @@ Given I can see a student with CPF "684" in the students list
 When I try to register the student "Pedro" with CPF "684"
 Then I cannot see "Pedro" with CPF "684" in the students list
 And I can see an error message
+
+Scenario: Registering student with login Github
+Given I am at the students page
+Given I cannot see a student with CPF "685" in the students list
+When I try to register the student "Nati" with CPF "685" and login Github "nss2"
+Then I can see "Nati" with CPF "685" and login Github "nss2" in the students list

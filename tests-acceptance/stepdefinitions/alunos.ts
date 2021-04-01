@@ -5,6 +5,8 @@ let expect = chai.expect;
 
 let sameCPF = ((elem, cpf) => elem.element(by.name('cpflist')).getText().then(text => text === cpf));
 let sameName = ((elem, name) => elem.element(by.name('nomelist')).getText().then(text => text === name));
+let sameLoginGit = ((elem, logingit) => elem.element(by.name('logingitlist')).getText().then(text => text === logingit));
+
 
 let pAND = ((p,q) => p.then(a => q.then(b => a && b)))
 
@@ -14,8 +16,21 @@ async function criarAluno(name, cpf) {
     await element(by.buttonText('Adicionar')).click();
 }
 
+async function criarAlunoGit(name, cpf, logingit) {
+    await $("input[name='namebox']").sendKeys(<string> name);
+    await $("input[name='cpfbox']").sendKeys(<string> cpf);
+    await $("input[name='logingitbox']").sendKeys(<string> logingit);
+    await element(by.buttonText('Adicionar')).click();
+}
+
 async function assertTamanhoEqual(set,n) {
     await set.then(elems => expect(Promise.resolve(elems.length)).to.eventually.equal(n));
+}
+
+async function assertElementsWithSameCPFAndNameAndLoginGit(n,cpf,name,logingit) { 
+    var allalunos : ElementArrayFinder = element.all(by.name('alunolist'));
+    var samecpfsandnameandlogingit = allalunos.filter(elem => pAND(pAND(sameCPF(elem,cpf),sameName(elem,name)), sameLoginGit(elem,logingit)));
+    await assertTamanhoEqual(samecpfsandnameandlogingit,n);
 }
 
 async function assertElementsWithSameCPFAndName(n,cpf,name) { 
@@ -61,5 +76,13 @@ defineSupportCode(function ({ Given, When, Then }) {
     Then(/^I can see an error message$/, async () => {
         var allmsgs : ElementArrayFinder = element.all(by.name('msgcpfexistente'));
         await assertTamanhoEqual(allmsgs,1);
+    });
+
+    When(/^I try to register the student "([^\"]*)" with CPF "(\d*)" and login Github "([^\"]*)"$/, async (name, cpf, logingit) => {
+        await criarAlunoGit(name,cpf,logingit);
+    });
+
+    Then(/^I can see "([^\"]*)" with CPF "(\d*)" and login Github "([^\"]*)" in the students list$/, async (name, cpf, logingit) => {
+        await assertElementsWithSameCPFAndNameAndLoginGit(1,cpf,name,logingit);
     });
 })
