@@ -24,7 +24,7 @@ describe("O servidor", () => {
     var options:any = {method: 'POST', uri: (base_url + "aluno"), body:{name: "Mari", cpf: "962"}, json: true};
     return request(options)
              .then(body =>
-                expect(body).toEqual({failure: "O aluno não pode ser cadastrado"})
+                expect(body).toEqual({success: "O aluno foi cadastrado com sucesso"})
              ).catch(e =>
                 expect(e).toEqual(null)
              )
@@ -54,5 +54,39 @@ describe("O servidor", () => {
                  expect(err).toEqual(null)
               });
  })
+
+ it("cadastra alunos com CPFs diferentes", () => {
+   var aluno1 = {"json":{"nome": "Nati", "cpf" : "966", "email":""}};
+   var aluno2 = {"json":{"nome": "André", "cpf" : "967", "email":""}};
+   var resposta1 = '{"nome":"Nati","cpf":"966","email":"","metas":{}}';
+   var resposta2 = '{"nome":"André","cpf":"967","email":"","metas":{}}';
+
+   return request.post(base_url + "aluno", aluno1)
+            .then(body => {
+               expect(body).toEqual({success: "O aluno foi cadastrado com sucesso"});
+               return request.post(base_url + "aluno", aluno2)
+                        .then(body => {
+                           expect(body).toEqual({success: "O aluno foi cadastrado com sucesso"});
+                           return request.get(base_url + "alunos")
+                                    .then(body => {
+                                       expect(body).toContain(resposta1);
+                                       expect(body).toContain(resposta2);
+                                     });
+                         });
+             })
+             .catch(err => {
+                expect(err).toEqual(null)
+             });
+})
+
+it("cadastra alunos com email", () => {
+   var options:any = {method: 'POST', uri: (base_url + "aluno"), body:{name: "Victor", cpf: "968", email: "vss@cin.ufpe.br"}, json: true};
+   return request(options)
+            .then(body =>
+               expect(body).toEqual({success: "O aluno foi cadastrado com sucesso"})
+            ).catch(e =>
+               expect(e).toEqual(null)
+            )
+ });
 
 })
