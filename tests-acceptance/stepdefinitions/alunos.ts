@@ -13,16 +13,11 @@ let sameLoginGit = ((elem, logingit) => elem.element(by.name('logingitlist')).ge
 
 let pAND = ((p,q) => p.then(a => q.then(b => a && b)))
 
-async function criarAluno(name, cpf) {
+async function criarAluno(name, cpf, email?, logingit?) {
     await $("input[name='namebox']").sendKeys(<string> name);
     await $("input[name='cpfbox']").sendKeys(<string> cpf);
-    await element(by.buttonText('Adicionar')).click();
-}
-
-async function criarAlunoGit(name, cpf, logingit) {
-    await $("input[name='namebox']").sendKeys(<string> name);
-    await $("input[name='cpfbox']").sendKeys(<string> cpf);
-    await $("input[name='logingitbox']").sendKeys(<string> logingit);
+    if (email != void 0) {await $("input[name='emailbox']").sendKeys(<string> email);}
+    if (logingit != void 0) {await $("input[name='logingitbox']").sendKeys(<string> logingit);}
     await element(by.buttonText('Adicionar')).click();
 }
 
@@ -82,7 +77,7 @@ defineSupportCode(function ({ Given, When, Then }) {
     });
 
     When(/^I try to register the student "([^\"]*)" with CPF "(\d*)" and login Github "([^\"]*)"$/, async (name, cpf, logingit) => {
-        await criarAlunoGit(name,cpf,logingit);
+        await criarAluno(name,cpf,void 0,logingit);
     });
 
     Then(/^I can see "([^\"]*)" with CPF "(\d*)" and login Github "([^\"]*)" in the students list$/, async (name, cpf, logingit) => {
